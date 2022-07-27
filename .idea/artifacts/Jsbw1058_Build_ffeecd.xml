@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Jsbw1058 Build ffeecd">
+    <output-path>$PROJECT_DIR$/out/artifacts/Jsbw1058_Build_ffeecd</output-path>
+    <root id="archive" name="Jsbw1058 Build ffeecd.jar">
+      <element id="module-output" name="JsbwAddon" />
+    </root>
+  </artifact>
+</component>
