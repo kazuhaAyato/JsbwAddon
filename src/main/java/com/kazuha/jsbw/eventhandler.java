@@ -92,16 +92,12 @@ public class eventhandler implements Listener {
                         for(Player p : Bukkit.getOnlinePlayers()){
                             Location c = p.getLocation().add(0.0,1.0,0.0);
                                 if(block.getRelative(e.getBlockFace()).equals(p.getLocation().getBlock())||block.getRelative(e.getBlockFace()).equals(c.getBlock())){
-                                    if(e.getPlayer().getName().equals("KazuhaAyato")){
-                                        e.getPlayer().sendMessage("§cSTOPPED (R)");
-                                    }
+
                                     return;
                                 }
                         }
                         if(bedwarsAPI.getArenaUtil().getArenaByPlayer(e.getPlayer()).isProtected(block.getLocation())){
-                            if(e.getPlayer().getName().equals("KazuhaAyato")){
-                                e.getPlayer().sendMessage("§cSTOPPED (P)");
-                            }
+
                             return;
                         }
                         if(block.getLocation().getBlock().getType() == Material.AIR){
@@ -115,9 +111,7 @@ public class eventhandler implements Listener {
                                 main.instance.getLogger().warning("发生错误:"+ e.getLocalizedMessage());
                             }
                         }
-                        if(e.getPlayer().getName().equals("KazuhaAyato")){
-                            e.getPlayer().sendMessage("§cSTOPPED (C)");
-                        }
+
                         return;
                     }
 
