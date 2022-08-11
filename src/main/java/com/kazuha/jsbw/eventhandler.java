@@ -54,70 +54,107 @@ public class eventhandler implements Listener {
             if(e.getPlayer().getItemInHand().getType() != Material.WOOL){
                 return;
             }
+            
+            ITeam team = bedwarsAPI.getArenaUtil().getArenaByPlayer(e.getPlayer()).getTeam(e.getPlayer());
+            Location location = e.getClickedBlock().getLocation();
+            Location loca = e.getClickedBlock().getLocation();
+            if (loca.getBlock().getRelative(e.getBlockFace()).getType() != Material.WOOL) {
+                if (e.getPlayer().getName().equals("KazuhaAyato")) {
+                    e.getPlayer().sendMessage("§cSTOPPED 1");
+                }
+                return;
+            }
+            Location locstart = new Location(location.getWorld(),location.getX(),location.getY()+2, location.getZ());
+            switch (e.getBlockFace()){
+                case UP:
+                    locstart = locstart.add(0.0,0.0+2, 0.0);
+                    break;
+                case DOWN:
+                    locstart = locstart.add(0.0,0.0-2, 0.0);
+                    break;
+                case NORTH:
+                    locstart = locstart.add(0.0,0.0, 0.0-2);
+                    break;
+                case SOUTH:
+                    locstart = locstart.add(0.0,0.0, 0.0+2);
+                    break;
+                case EAST:
+                    locstart = locstart.add(0.0+2,0.0, 0.0);
+                    break;
+                case WEST:
+                    locstart = locstart.add(0.0-2,0.0, 0.0);
+                    break;
+            }
+            Location finalLocstart = locstart;
+            final int[] timer = {0};
             BukkitRunnable r = new BukkitRunnable(){
                 @Override
-                public void run(){
-                    ITeam team = bedwarsAPI.getArenaUtil().getArenaByPlayer(e.getPlayer()).getTeam(e.getPlayer());
-                    Location location = e.getClickedBlock().getLocation();
-                    Location loc = e.getClickedBlock().getLocation();
-                    if(loc.getBlock().getRelative(e.getBlockFace()).getType() != Material.WOOL){
+                public void run() {
+                    timer[0]++;
+                    if(timer[0] > 10){
                         if(e.getPlayer().getName().equals("KazuhaAyato")){
-                            e.getPlayer().sendMessage("§cSTOPPED (E)");
+                            e.getPlayer().sendMessage("§cSTOPPED (2)");
                         }
                         return;
                     }
-                    for(int i=2; i<=12; i++){
-                        switch (e.getBlockFace()){
+                    Location loc = finalLocstart;
+                        switch (e.getBlockFace()) {
                             case UP:
-                                loc = new Location(location.getWorld(),location.getX(),location.getY()+i, location.getZ());
+                                loc = loc.add(0.0,1.0,0.0);
                                 break;
                             case DOWN:
-                                loc = new Location(location.getWorld(),location.getX(),location.getY()-i, location.getZ());
+                                loc = loc.add(0.0,-1.0,0.0);
                                 break;
                             case NORTH:
-                                loc = new Location(location.getWorld(),location.getX(),location.getY(), location.getZ()-i);
+                                loc = loc.add(0.0,0.0,-1.0);
                                 break;
                             case SOUTH:
-                                loc = new Location(location.getWorld(),location.getX(),location.getY(), location.getZ()+i);
+                                loc = loc.add(0.0,0.0,1.0);
                                 break;
                             case EAST:
-                                loc = new Location(location.getWorld(),location.getX()+i,location.getY(), location.getZ());
+                                loc = loc.add(1.0,0.0,0.0);
                                 break;
                             case WEST:
-                                loc = new Location(location.getWorld(),location.getX()-i,location.getY(), location.getZ());
+                                loc = loc.add(-1.0,0.0,0.0);
                                 break;
                         }
 
                         Block block = loc.getBlock();
                         for(Player p : Bukkit.getOnlinePlayers()){
                             Location c = p.getLocation().add(0.0,1.0,0.0);
-                                if(block.getRelative(e.getBlockFace()).equals(p.getLocation().getBlock())||block.getRelative(e.getBlockFace()).equals(c.getBlock())){
-
-                                    return;
+                            if(block.getRelative(e.getBlockFace()).equals(p.getLocation().getBlock())||block.getRelative(e.getBlockFace()).equals(c.getBlock())){
+                                if(e.getPlayer().getName().equals("KazuhaAyato")){
+                                    e.getPlayer().sendMessage("§cSTOPPED (2)");
                                 }
-                        }
-                        if(bedwarsAPI.getArenaUtil().getArenaByPlayer(e.getPlayer()).isProtected(block.getLocation())){
-
-                            return;
-                        }
-                        if(block.getLocation().getBlock().getType() == Material.AIR){
-                            block.setType(Material.WOOL);
-                            block.setData(team.getColor().itemByte());
-                            team.getArena().addPlacedBlock(block);
-                            try {
-                                Thread.sleep(100);
-                                continue;
-                            } catch (InterruptedException e) {
-                                main.instance.getLogger().warning("发生错误:"+ e.getLocalizedMessage());
+                                return;
                             }
                         }
+                        if(bedwarsAPI.getArenaUtil().getArenaByPlayer(e.getPlayer()).isProtected(block.getLocation())){
+                            if(e.getPlayer().getName().equals("KazuhaAyato")){
+                                e.getPlayer().sendMessage("§cSTOPPED (3)");
+                            }
+                            return;
+                        }
+                        if(!block.getLocation().getBlock().getType().equals(Material.AIR)){
+                            if(e.getPlayer().getName().equals("KazuhaAyato")){
+                                e.getPlayer().sendMessage("§cSTOPPED (4)");
+                            }
+                            return;
 
-                        return;
+                        }
+                    block.setType(Material.WOOL);
+                    team.getArena().addPlacedBlock(block);
+                    block.setData(team.getColor().itemByte());
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        main.instance.getLogger().warning("发生错误:"+ e.getLocalizedMessage());
                     }
 
-                }
+
+                    }
             };
-            r.runTaskLaterAsynchronously(instance, 3L);
+            r.runTaskTimer(instance, 0L, 1L);
         }
         if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR){
             if(e.getPlayer().getItemInHand().getType() == Material.WOOL){
